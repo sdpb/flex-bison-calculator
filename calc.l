@@ -6,6 +6,7 @@
 
 %%
 
+[a-zA-Z] { yylval = *yytext - 'a'; return VARIABLE; }
 [0-9]+ { yylval = atoi(yytext); return NUMERO; }
 -[0-9]+ { yylval = atoi(yytext); return NEG; }
 [ \t] ;

@@ -3,31 +3,34 @@
     #include <stdio.h>
     void yyerror(char *);
     int yylex(void);
+    int vet[20];
 %}
 
-%token NUMERO
+%token NUMERO VARIABLE
 %token ABREP CIERRAP MAS MIN MUL DIV IGUAL NEG ENTER
 %left MAS MIN IGUAL
 %left DIV MUL
-%left NEG
+%left NEG 
 
 %%
 
 program:
-    program statement ENTER { printf("Ingresa una expresion\n"); }
-    | /* NULL */ { printf("Ingresa una expresion \n"); }
+    program statement ENTER 
+    | /* NULL */ 
     ;
 statement:
     expression  { printf("\nResultado final: %d\n\n", $1); }
+    | VARIABLE IGUAL expression { vet[$1] = $3; }
     ;
 expression:
-    NUMERO { printf("LOAD %d\n", $1); }
-    | NEG { printf("LOAD %d\n", $1); }
-    | expression MAS expression { printf("ADD\t\t%d\n", $1 + $3); $$ = $1 + $3; }
-    | expression MIN expression { printf("MIN\t\t%d\n", $1 - $3); $$ = $1 - $3; }
-    | expression MUL expression { printf("MUL\t\t%d\n", $1 * $3); $$ = $1 * $3; }
-    | expression DIV expression { printf("DIV\t\t%d\n", $1 / $3); $$ = $1 / $3; }
-    | ABREP expression CIERRAP { printf("PARENTESIS\t%d\n", $2); $$ = $2; }
+    NUMERO { printf("N %d\n", $1); }
+    | NEG { printf("-N %d\n", $1); }
+    | VARIABLE { printf("V %d\n", $1); $$ = vet[$1]; }
+    | expression MAS expression { printf("M+ %d\n", $1 + $3); $$ = $1 + $3; }
+    | expression MIN expression { printf("M- %d\n", $1 - $3); $$ = $1 - $3; }
+    | expression MUL expression { printf("M* %d\n", $1 * $3); $$ = $1 * $3; }
+    | expression DIV expression { printf("D/ %d\n", $1 / $3); $$ = $1 / $3; }
+    | ABREP expression CIERRAP { printf("() %d\n", $2); $$ = $2; }
     ;
 
 %%
